@@ -3,12 +3,13 @@ export default function Home() {
     <main className="min-h-screen bg-white text-slate-900">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 flex justify-between items-center px-6 md:px-12 py-5 bg-white/90 backdrop-blur border-b border-slate-100">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-blue-950 flex items-center justify-center">
-            <span className="text-amber-400 font-display text-lg">M</span>
-          </div>
+        <div className="flex items-center gap-2.5">
+          <img src="/logo.png" alt="Meridian Bank International" className="h-9 w-auto" />
           <span className="font-display text-lg tracking-tight">
-            Meridian <span className="text-slate-400 font-sans text-sm font-normal">Bank International</span>
+            Meridian{" "}
+            <span className="text-slate-400 font-sans text-sm font-normal">
+              Bank International
+            </span>
           </span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm text-slate-600">
@@ -32,7 +33,6 @@ export default function Home() {
 
       {/* Hero */}
       <section className="relative overflow-hidden px-6 md:px-12 pt-16 pb-24 bg-gradient-to-b from-slate-50 to-white">
-        {/* signature: connection lines */}
         <svg
           className="absolute inset-0 w-full h-full opacity-[0.25] pointer-events-none"
           viewBox="0 0 1000 500"
