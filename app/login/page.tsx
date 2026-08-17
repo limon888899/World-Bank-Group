@@ -1,14 +1,38 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function Login() {
+  const router = useRouter();
   const [phone, setPhone] = useState("");
   const [pin, setPin] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`লগইন চেষ্টা: ${phone}`);
-    // এখানে পরে আসল অথেন্টিকেশন লজিক যুক্ত হবে
+    setError("");
+    setLoading(true);
+
+    const { data, error: fetchError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("phone", phone)
+      .eq("pin", pin)
+      .single();
+
+    setLoading(false);
+
+    if (fetchError || !data) {
+      setError("ফোন নম্বর বা পিন ভুল হয়েছে");
+      return;
+    }
+
+    // সহজভাবে ইউজার আইডি সেভ করি (পরে আরও নিরাপদ auth যোগ করা যাবে)
+    localStorage.setItem("userId", data.id);
+    localStorage.setItem("userName", data.name);
+    router.push("/dashboard");
   };
 
   return (
@@ -17,6 +41,13 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
           লগইন করুন
         </h2>
+
+        {error && (
+          <p className="bg-red-50 text-red-600 text-sm px-4 py-2 rounded-lg mb-4">
+            {error}
+          </p>
+        )}
+
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-gray-600 mb-1">মোবাইল নম্বর</label>
@@ -43,9 +74,10 @@ export default function Login() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800"
+            disabled={loading}
+            className="w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 disabled:opacity-50"
           >
-            লগইন
+            {loading ? "অপেক্ষা করুন..." : "লগইন"}
           </button>
         </form>
         <p className="text-center text-gray-500 mt-4">
