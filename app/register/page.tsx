@@ -1,16 +1,53 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function Register() {
+  const router = useRouter();
   const [form, setForm] = useState({ name: "", phone: "", pin: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`রেজিস্ট্রেশন সম্পন্ন: ${form.name}`);
+    setError("");
+    setLoading(true);
+
+    // ফোন নম্বর আগে থেকে আছে কিনা চেক করুন
+    const { data: existing } = await supabase
+      .from("users")
+      .select("id")
+      .eq("phone", form.phone)
+      .single();
+
+    if (existing) {
+      setError("এই নম্বরে ইতিমধ্যে অ্যাকাউন্ট আছে");
+      setLoading(false);
+      return;
+    }
+
+    const { error: insertError } = await supabase.from("users").insert({
+      name: form.name,
+      phone: form.phone,
+      pin: form.pin,
+      balance: 0,
+    });
+
+    setLoading(false);
+
+    if (insertError) {
+      setError("রেজিস্ট্রেশন ব্যর্থ হয়েছে, আবার চেষ্টা করুন");
+      console.error(insertError);
+      return;
+    }
+
+    alert("রেজিস্ট্রেশন সফল হয়েছে! এখন লগইন করুন");
+    router.push("/login");
   };
 
   return (
@@ -19,6 +56,13 @@ export default function Register() {
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
           নতুন অ্যাকাউন্ট
         </h2>
+
+        {error && (
+          <p className="bg-red-50 text-red-600 text-sm px-4 py-2 rounded-lg mb-4">
+            {error}
+          </p>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-600 mb-1">পূর্ণ নাম</label>
@@ -54,9 +98,10 @@ export default function Register() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800"
+            disabled={loading}
+            className="w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 disabled:opacity-50"
           >
-            রেজিস্ট্রেশন করুন
+            {loading ? "অপেক্ষা করুন..." : "রেজিস্ট্রেশন করুন"}
           </button>
         </form>
         <p className="text-center text-gray-500 mt-4">
