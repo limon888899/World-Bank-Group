@@ -14,7 +14,8 @@ const inter = Inter({
 
 export const metadata = {
   title: "Meridian Bank International — Banking Without Borders",
-  description: "Send, receive, and manage money across 190+ countries with Meridian Bank International.",
+  description:
+    "Send, receive, and manage money across 190+ countries with Meridian Bank International.",
 };
 
 export default function RootLayout({
