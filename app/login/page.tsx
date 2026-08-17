@@ -25,21 +25,23 @@ export default function Login() {
     setLoading(false);
 
     if (fetchError || !data) {
-      setError("ফোন নম্বর বা পিন ভুল হয়েছে");
+      setError("Incorrect phone number or PIN");
       return;
     }
 
-    // সহজভাবে ইউজার আইডি সেভ করি (পরে আরও নিরাপদ auth যোগ করা যাবে)
     localStorage.setItem("userId", data.id);
     localStorage.setItem("userName", data.name);
     router.push("/dashboard");
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
-          লগইন করুন
+        <div className="flex justify-center mb-6">
+          <img src="/logo.png" alt="Meridian Bank International" className="h-10 w-auto" />
+        </div>
+        <h2 className="text-2xl font-display text-center text-blue-950 mb-6">
+          Log In
         </h2>
 
         {error && (
@@ -50,40 +52,40 @@ export default function Login() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-gray-600 mb-1">মোবাইল নম্বর</label>
+            <label className="block text-slate-600 text-sm mb-1">Phone Number</label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="01XXXXXXXXX"
-              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="+1 234 567 8900"
+              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
               required
             />
           </div>
           <div>
-            <label className="block text-gray-600 mb-1">পিন</label>
+            <label className="block text-slate-600 text-sm mb-1">PIN</label>
             <input
               type="password"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
-              placeholder="৪-সংখ্যার পিন"
+              placeholder="4-digit PIN"
               maxLength={4}
-              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
               required
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 disabled:opacity-50"
+            className="w-full bg-blue-950 text-white py-3 rounded-lg hover:bg-blue-900 disabled:opacity-50 transition"
           >
-            {loading ? "অপেক্ষা করুন..." : "লগইন"}
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
-        <p className="text-center text-gray-500 mt-4">
-          অ্যাকাউন্ট নেই?{" "}
-          <a href="/register" className="text-blue-700 font-medium">
-            রেজিস্ট্রেশন করুন
+        <p className="text-center text-slate-500 mt-5 text-sm">
+          Don't have an account?{" "}
+          <a href="/register" className="text-blue-950 font-medium">
+            Open one now
           </a>
         </p>
       </div>
